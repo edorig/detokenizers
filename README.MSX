@@ -1,0 +1,83 @@
+
+MSX BASIC DETOKENIZER
+=====================
+
+Reading the documentation of MSX-Basic in  MSX2 Technical Handbook, 
+(ASCII Corporation, Japan, 1987) and The MSX Red Book Revised (chapter 7) 
+and comparing it to the documentation of GW-Basic, it becomes obvious 
+that both Basic interpreters use a similar format when saving Basic programs in
+tokenized files. 
+
+In both cases, the file begins with FF, and a line is saved in the format: 
+
+2 bytes containing the address of the next line. 
+2 bytes containing the line number. 
+Basic instructions on the line in tokenized format. 
+one byte set to 0 to terminate the line. 
+
+As a result, the detokenizer gwbasic of Christian Ratcliff could be 
+easily modified to detokenize MSX-Basic programs stored in tokenized 
+format. It was enough to change the initializations  of the arrays:  
+
+gwb_optable gwb_ops[] 
+gwb_optable gwb_duops[] 
+
+in msx_interpreter.h 
+
+After doing this, the next step was to note that MSX-Basic use 
+a Binary Coded Decimal representation for real constants instead of 
+the Floating point number representation of GW-Basic. 
+
+single precision constants are represented as 4 bytes preceded by 0x1d : 
+ 0x1d aa bb cc dd 
+
+the byte aa contains the sign (bit 7) and exponent (in base 10, between -64 and +64, stored in bits 1 to 6). The 3 other bytes contain the decimal figures, 
+two figures in each byte, written left to right. 
+
+The instructions in msx_interpreter.c perform the decoding of single precision constants:  
+
+if ((hw1 &128)==0) {x += sprintf(&buf[x], "%s.%x%x%xE%+d", gi_futz_byte(b, gwb_ops),hw2,hw3,hw4,((hw1 & 127)-64)); 
+                  } else {
+                x += sprintf(&buf[x], "%s-.%x%x%xE%+d", gi_futz_byte(b, gwb_ops),hw2,hw3,hw4,((hw1 & 127)-64)); 
+              };
+ 
+Double precision constants are represented by 0x1f followed by 8 bytes. 
+As for single precision constants, the first byte contains sign and exponent,
+and the remaining bytes contain the decimal figures. 
+The decoding is done by: 
+
+if ((hw1 &128)==0) {x += sprintf(&buf[x], "%s.%x%x%x%x%x%x%xD%+d",gi_futz_byte(b, gwb_ops),hw2,hw3,hw4,hw5,hw6,hw7,hw8,((hw1 &127)-64));
+              } else {
+                x += sprintf(&buf[x], "%s-.%x%x%x%x%x%x%xD%+d",gi_futz_byte(b, gwb_ops),hw2,hw3,hw4,hw5,hw6,hw7,hw8,((hw1 &127)-64)); 
+              };              
+
+Detokenizers for other BASICs: 
+=============================
+
+* The format used by GW-Basic was also used by Microsoft Basic for CP/M-80. 
+Again, one only needs to modify the definitions of 
+
+gwb_optable gwb_ops[] 
+gwb_optable gwb_duops[] 
+
+in msx_interpreter.h 
+
+* A list of tokens can be obtained by typing a program in Microsoft Basic 
+running in a CP/M 80 emulator and saving in binary format. Examining 
+a dump of the file and comparing with the original listing, one can 
+reconstruct the tokens representing the Basic keywords. 
+
+* The Oric computers appear to also use the same format as GWBasic 
+for tokenized files. A list of tokens is available from 
+
+* The TRS-80, Dragon, and Tandy Color Computer (CoCo) also used the same 
+format. 
+
+* The Exidy Sorcerer also uses this format. 
+
+  
+
+
+
+
+

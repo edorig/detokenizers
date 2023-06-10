@@ -1,0 +1,268 @@
+Detokenizers for Microsoft BASIC
+--------------------------------
+
+The present package contains the source for 12 detokenizers for 
+different flavors of Microsoft BASIC. 
+
+trs80ascii:	TRS-80 Model I, BASIC Level II 
+trsm4ascii:	TRS-80 Model 4
+msxascii:	MSX BASIC 
+gwascii:	GW-BASIC (IBM PC and compatibles) 
+cpmascii:	Microsoft BASIC for CP/M-80 
+cocoascii:	Tandy Color Computer BASIC
+drascii:	Dragon 32/64 BASIC 
+
+osiascii:	Ohio Scientific Instruments 8K BASIC in ROM
+sorcascii:	Exidy Sorcerer 
+nscmascii:	Nascom Basic 
+xtalascii:	Crystal Basic (for Nascom)
+compucolorascii: Compucolor 
+
+The detokenizer for TRS-80 Model I and 4, CP/M BASIC, GW BASIC and MSX BASIC have been 
+tested with many programs and have worked correctly. The detokenizer
+for CoCo BASIC has been tested with 3 programs with correct results. 
+The Dragon BASIC is  untested, but is likely to work correctly. 
+
+The last five detokenizers, for
+Exidy Sorcerer, Compucolor, OSI Challenger, Nascom and Crystal Basic are also
+untested.  The list of tokens for the
+Sorcerer was incomplete (the LOG function was missing) and it is
+unclear that tokenized BASIC programs for these machines will 
+be available for testing. In the case of OSI Challenger, Nascom and 
+Crystal Basic the list of tokens (found in computer magazines of the
+1980s) is presumably correct, but again 
+the availability of tokenized Basic programs for these computers is
+doubtful. They are included in the present
+distribution only for the benefit of those having Nascom/OSI/Exidy Sorcerer
+computers (or emulators) who would wish to import the tokenized Basic
+programs on a modern computer. 
+
+Usage:
+-----
+
+start the program by typing at the shell prompt:
+$ xxxascii 
+
+Once the program is started, load a tokenized Basic program: 
+
+load "prog1.bas" 
+
+list the program by typing: 
+
+list
+
+save the ASCII listing by typing:
+
+list ,"prog1.lst"       
+
+Note: don't forget the space before the comma. 
+
+return to the shell by typing:
+
+system 
+
+More details can be found in the Manual pages. 
+
+Installation:
+------------
+On Unix, BSD, Linux, MacOSX:  
+Typing make will compile the programs for TRS-80s,CoCo,Dragon,CP/M,MSX
+and GW BASICs. 
+make install will install the programs in /usr/local/bin/ 
+Change INSTDIR in the makefile to modify the location. 
+To compile the detokenizers for Exidy Sorcerer, Nascom and OSI BASIC, type
+make untst. 
+There is no install for these 4 detokenizers since they are completely 
+untested. 
+
+On Windows: 
+A C compiler such as MinGW is necessary. The Makefile should work with
+Cygwin make utility. It might be necessary to replace the termcap and 
+ncurses libraries by the appropriate libraries for control of DOS command
+window screen. The program will run in text mode. 
+
+Building your own detokenizer or fixing an untested one:
+-------------------------------------------------------
+
+This assumes that the Basic is of the Microsoft type. 
+In that case, a tokenized Basic program will begin with 
+0xff byte. 
+The format of a line is: 
+
+o first 2 bytes: memory address (can be discarded) 
+o following 2 bytes: line number as a 16 bit word (0-65536) 
+o following bytes: tokenized Basic instructions, strings and numerical
+constants, variable names... 
+o final byte: ascii code 0x00 (hexadecimal) = 0 (decimal) 
+
+The above can be checked by examining a dump of a tokenized Basic
+program using hexdump -C.
+
+Building a detokenizer requires two steps. First, one must obtain
+the list of tokens/keywords to insert in the header file. 
+Second, one must use one of the programs 
+
+msx_interpreter.c
+cpm_interpreter.c
+coco.c 
+trs_interpreter.c 
+
+as templates to generate the detokenizer.   
+
+a) Obtaining the list of tokens and preparing the header file: 
+   ----------------------------------------------------------
+
+This can be found either from a book or from hexadecimal dump of the 
+ROM (or program file) containing the Basic interpreter. 
+The hexadecimal dump method is as follows 
+
+hexdump -C basic_interpreter_file > basic.dump
+
+One then has to examine basic.dump with a text editor to find 
+where are the basic instructions  (the simplest is to search for
+a Basic keyword such as PRINT, INPUT, FOR or NEXT). Each Basic keyword
+will be followed by the corresponding token. The tokens have to be
+inserted in the header file in the format: 
+
+gwb_optable gwb_ops[] = {
+token1,"KEYWORD1",
+token2,"KEYWORD2", 
+...
+lasttoken,"LASTKEYWORD",
+0x0,0
+}; 
+
+Depending on the Basic interpreter, function tokens can be preceded 
+by a 0xff code. In that case, function tokens have to be inserted in
+the second table: 
+
+gwb_optable gwb_duops[] = {
+token1,"FUNCTION1",
+....
+lasttoken,"LASTFUNCTION",
+0x0,0
+}; 
+
+A hint that this is the case is when the same token is associated 
+with two different keywords, one of them being a statement, the other
+a function. 
+
+Once the keywords are entered in the header file, one can use as
+template either:
+
+1. trs_interpreter.c, osi.c, nascom.c 
+if the interpreter is not using 0xff before function tokens
+ 
+2. cpm_interpreter.c  if the interpreter is inserting 0xff before 
+function tokens
+
+In doubt, it is better to assume start with trs_interpreter.c as
+template. If 0xff is used to prefix functions, the listing will
+then contain [opcode ff] in the middle of Basic statements, and 
+one will just have to switch to cpm_interpreter.c 
+
+Call the header file "mybasic.h" 
+
+
+b) Big and Little Endian processors:
+------------------------------------ 
+
+As said above, the line number is encoded in a two-byte 16 bit word. 
+However, there are two different way to write a 16 bit word with 
+2 bytes. 
+The first one, called big endian representation, is to write
+the 8 most significant bits on the left (MSB), 
+and the 8 least significant bit on the right (LSB). The 16 bit integer
+is then given by 256*(leftmost byte)+rightmost byte. 
+The second one, called little endian representation consists in
+writing the LSB on the left, and the MSB on the right. The 16 bit integer
+is then given by 256*(rightmost byte)+leftmost byte.
+
+The little endian representation is used by Intel processors
+8080,8085,8086,8088, and 80[1-6]86 as well as the Zilog Z80. 
+The cpmascii program assumes such a representation.
+
+The big endian representation is used by Motorola processors
+6800, 6802, 6803, 6809. Presumably, the MOS 6502 and 6510 being
+derived from the 6800 use the same representation.  
+the cocoascii program assumes such representation (Tandy color
+computers used a 6809 microprocessor). 
+
+A problem of little versus big endian representation will appear 
+in the line numbers when listing the program. If the wrong
+representation is used, line numbers will not be in increasing order
+and will initially be multiple of 256. 
+
+A simple way to detect whether a tokenized Basic program is using big
+or little endian representation is to use both cpmascii and cocoascii 
+to list it. A little endian representation will produce a correct
+line numbering with cpmascii and not cocoascii while big endian
+representation will give the reverse. 
+
+c) Decimal  constants:
+----------------------
+
+Decimal constants (such as 0.5, 3.14, 6.02E+23) 
+can be represented either as Binary Coded Decimal or as Binary 
+floating point. MSX Basic uses the first, CP/M Basic the second. 
+Trying to list the tokenized program with both msxascii and cpmascii 
+is useful to determine which representation is used. 
+
+There may be problems further with binary floating point constants related
+with big or little endian format.  
+the order in which the 3 or 7 bytes forming the mantissa and the byte
+forming the exponent are stored is not always documented. 
+On a big endian processor, the mantissa is probably stored with
+most significant byte first in opposition to CP/M or GW Basic (least
+significant byte first). However, it is not clear whether exponent will appear
+as first or last of the 4 or 8 bytes. The program cocoascii assumes 
+the exponent is stored in the first byte. If running the program
+produces incorrect results for known constants (for instance
+mathematical constants such as pi or e or physical constants such as 
+the speed of light in SI units or the Avogadro number) in the listed 
+program, one should try to see whether a circular parmutation of
+hw1,...,hw4 bringing hw4 in exponent (for single precision) 
+or of hw1,...,hw8 bringing hw8 in exponent (for double precsion) 
+ in the file coco.c leads to correct results.        
+
+d) putting it all together:
+  -------------------------
+
+1. choice of template 
+For single token with no prefix 0xff use trs80_interpreter.c as
+template. 
+For 0xff prefix for functions use cpm_interpreter.c on little
+endian processor, coco.c on big endian processor. 
+
+cp <appropriate template>.c mybasic.c  
+
+2. modify the C program 
+
+emacs mybasic.c 
+
+change the #include "trs80.h" or #include "cpm_interpreter.h" to
+#include "mybasic.h" 
+
+and replace:
+
+
+case '(': 
+    case 0xd4: /* > sign */ 
+    case 0xd6: /* < sign */
+    case 0xcd: /* + sign */ 
+    case 0xce:/* - sign */  
+    case 0xcf:/* * sign */ 
+    case 0xd0:/* / sign */ 
+    case 0xd5: { /* = sign; this is a numeric operation, try to read a number */
+
+or a similar case instruction. 
+  
+with the appropriate tokens for the signs <,>,=<,+,-,*,/. 
+
+If binary coded decimal is used, take from MSX Basic the decoding
+instruction, otherwise leave instructions untouched. 
+
+Add to the makefile a line
+
+MYBASIC = mybasic.o 
+

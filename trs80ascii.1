@@ -1,0 +1,92 @@
+' t
+.TH TRS80ASCII 1 "November 5, 2011" "" "User commands"
+.SH NAME \"{{{roff}}}\"{{{
+trs80ascii \- TRS-80 Model I Level II Basic program files detokenizer 
+.\"}}}
+.SH SYNOPSIS \"{{{
+.ad l
+.B trs80ascii
+.RB [ \-d ]
+.ad b
+.\"}}}
+.SH DESCRIPTION \"{{{
+.SS "Introduction" \"{{{
+.B trs80ascii
+is a detokenizer for TRS-80 Model I Level II Basic program files. 
+The TRS-80 Model I was an early popular microcomputer based on the
+Zilog Z80 sold by Tandy Radio Schack at the beginning of the 1980s. 
+This computer could be programmed in Level I (limited) 
+or Level II (fuller) Basic.  To save space in
+computer memory and on floppy disks, the Basic keywords were 
+replaced by single byte tokens of ASCII code above 128 (decimal). 
+\fBtrs80ascii\fP reads 
+an Level II Basic file saved in tokenized format and allows to list 
+the Basic program and save it in ASCII format. The program may then
+be used with a Unix traditional Basic interpreter such as
+\fBbwbasic(1)\fP,\fPbas(1)\fP or \fBblassic(1)\fP. 
+.\"}}}
+.SS "Commands" \"{{{
+ Once \fBtrs80ascii\fP has been started, it expects to receive commands 
+as a Basic interpreter in direct mode.
+. IP "[\fB auto \fP]"   \"{{{
+Starts automatic line numbering.
+.\"}}} 
+.IP "[\fB credits \fP]"  \"{{{
+Prints credits.
+.\"}}} 
+.IP "[\fB help \fP]" \"{{{ 
+Prints some help messages.
+.\"}}} 
+.IP "[\fB list \fP]" \"{{{ 
+Lists a program previously loaded in memory on standard output. 
+\fB list xx-yy \fP xx-yy will list only the lines from xx to yy. 
+\fB list xx-yy,filename\fP  will list only the lines from xx to yy and
+write them to the file filename instead of writing to stdout. the
+filename should not be enclosed between quotes.  
+.\"}}} 
+.IP "[\fB load \fP]" \"{{{ 
+loads a program in memory. a filename enclosed in double quotes must be provided as argument. The program loaded in memory will be erased. 
+.\"}}} 
+.IP "[\fB new \fP]" \"{{{ 
+erases the program currently in memory.  
+.\"}}}  
+.IP "[\fB run \fP]" \"{{{ 
+Does nothing. 
+.\"}}}  
+.IP "[\fB version \fP]" \"{{{ 
+prints version. 
+.\"}}} 
+.IP "[\fB system \fP]" \"{{{ 
+Returns to the shell. 
+.\"}}} 
+.\"}}}
+.SH OPTIONS \"{{{
+.IP "\fB\-d\fP," 
+turns on some debugging messages. 
+\"}}} 
+.SH SEE ALSO \"{{{
+cpmascii(1) gwascii(1)  msxascii(1) bwbasic(1) bas(1) blassic(1) 
+\"}}} 
+.SH AUTHOR \"{{{
+This program is copyright 1994\(en2011. 
+.PP
+This program is free software; you can redistribute it and/or modify it
+under the terms of the GNU Lesser General Public License as published
+by the Free Software Foundation; either version 2.1 of the License, or
+(at your option) any later version.
+.PP
+This program is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public
+License for more details.
+.PP
+You should have received a copy of the GNU Lesser General Public License
+along with this program.  If not, write to the Free Software Foundation,
+Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
+.\"}}}
+.SH HISTORY \"{{{
+The original program \fBgwbasic(1)\fP written by Christian Ractliff
+was a detokenizer for GW-Basic, the IBM-PC Basic interpreter. The
+present program has been modified 
+by Edmond Orignac to detokenize TRS-80 Basic level II. 
+.\"}}}

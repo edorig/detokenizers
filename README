@@ -1,0 +1,43 @@
+Modular Unix BASIC, version 2.2a
+
+Written by Christian A. Ratliff <ratlifc@lily.org>
+Floating Point Format by Matt Nelson <nelsonm@ctron.com>
+Name and Testing by Erik Barstow <ebarstow@ctron.com>
+
+based on Microsoft GW-BASIC 3.23
+(c) Copyright Microsoft 1983,1984,1985,1986,1987,1988
+
+
+  Back in 1989 I was a newbie programmer writing toys in GWBASIC on old
+IBM XTs. The toys I wrote then followed me around for many years until
+one day I had a sudden need to see that old code. [What can I say it was
+a slow day? :)] The PCs nowadays run Qbasic, which cannot even convert old
+BASICA/GWBASIC code to the new format. No luck there. The Net had nothing
+to offer to read this kind of code either.
+  I decided then to write a pretty-printer which read MS format GWBASIC
+and outputs PostScript. Armed with one hardcopy of a 2,000 line BASIC
+program and a copy of the binary for the same I set to work. The initial
+text printer took an hour or so. Then the first two, of four, floating
+point formats was another 2-3 hours. I quickly realized I was close to
+having something more interactive.
+  I broke the code into sections, rewrote some of it and threw some crufty
+junk away. Once more armed with a small Pocket Books GWBASIC/BASICA Guide
+I set to work writing a GWBASIC enviroment/interpreter/executor. Currently
+the enviroment is well underway. The interpreter still needs 1.5 floating
+point formats built into it [those are hard to figure out!], and some of
+the stranger opcodes are still missing:  PEEK, POKE, COM, etc...
+  Like all tiny projects this sat in a directory and gathered dust until
+I changed jobs and found it again. The port to BSDI was pretty damn hard,
+for a 1,500 line program, and I quickly gave up to adjust to my new job.
+Eventually I got myself a Unix box for home and started work on a BSD
+port again. This time I quickly found and resolved the problems and
+I'm back to work on it again.
+  I hope someone reads this who also has old GWBASIC code lying around
+they would like to read, write, run, and generally mess around with. If
+you are someone matching that description give a gander at the code
+on ftp://ftp.lily.org/pub/ratlifc/gwbasic-2.2.tar.gz and send me email
+at <ratlifc@lily.org>
+
+Christian Ratliff
+<ratlifc@lily.org>
+http://www.lily.org/~ratlifc

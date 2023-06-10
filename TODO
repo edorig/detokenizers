@@ -1,0 +1,8 @@
+Jan 8, 1996 - ratlifc@lily.org
+
+o Direct mode would be cool to add for the YACC practice
+o Support for plain text LOAD and SAVE is nice for us Unix heads
+o MS formatted SAVEs are also not a bad idea
+o Find the rest of the opcodes
+o Use the MS GWBASIC manual here to complete the floating point module
+o Write the Executor!!

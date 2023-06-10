@@ -1,0 +1,37 @@
+* Edmond Orignac Fri Nov 11, 2011
+
+o gwb_interpreter.h: 
+Added a complete list of GW-BASIC keywords and corresponding opcodes 
+taken from page
+http://www.chebucto.ns.ca/~af380/GW-BASIC-tokens.html   
+Added dual opcodes 0xfe,0xfd 
+
+o gwb_interpreter.c:
+
+Corrected parsing of double precision numerical constants 
+Added treatment of dual opcodes 
+ 
+o msx_interpreter.h 
+Added a complete list of GW-BASIC keywords and corresponding opcodes 
+from the MSX2 Technical Book. 
+
+o gwb_interpreter.c:
+
+Inserted parsing of numerical constants in Binary Coded Decimal 
+(single and double precision)  
+
+o trs80.h 
+Inserted a list of Level II Basic opcodes from Ira Goldklang's site
+
+o trs_interpreter.c:
+
+Removed dual opcodes (TRS-80 Basic Level II uses only single opcodes). 
+
+o gwb_interpreter.c:
+
+Corrected parsing of double precision numerical constants 
+Added treatment of dual opcodes 
+ 
+o cpm_interpreter.h 
+Added a complete list of Microsoft BASIC for CP/M-80 keywords and 
+corresponding opcodes.  
