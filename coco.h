@@ -6,7 +6,7 @@ typedef struct {
 } gwb_optable;
 
 /* source for the opcodes: drgninfo.zip */ 
-
+/* https://web.archive.org/web/20151027221704/http://www.coco3.com/community/2009/09/color-basic-command-tokens/ */ 
 gwb_optable gwb_ops[] = {
 0x80 ,"FOR",
 0x81 ,"GO",
@@ -86,7 +86,7 @@ gwb_optable gwb_ops[] = {
 0xcb ,"RENUM",
 0xcc ,"FN",
 0xcd ,"USING",
-0xce ,"DIR",
+0xce ,"DIR", /* with RSDOS */ 
 0xcf ,"DRIVE",
 0xd0 ,"FIELD",
 0xd1 ,"FILES",
@@ -104,7 +104,7 @@ gwb_optable gwb_ops[] = {
 0xdd ,"BACKUP",
 0xde ,"COPY",
 0xdf ,"DSKI$",
-0xe0 ,"DSKO$",
+0xe0 ,"DSKO$", /* From fundemo.bas by Larry Greenfield */  
 0x00, 0
   };
 

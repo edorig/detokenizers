@@ -65,8 +65,9 @@ int ge_command()
 
   bzero(buf, BUFSIZ);
 
-  gets(buf);
-
+  fgets(buf,BUFSIZ,stdin);
+  /* Was : gets(buf);  considered unsafe */
+  
   if (!*buf) return 1;
   
   for (idx = 0; cmds[idx].name; idx++) {

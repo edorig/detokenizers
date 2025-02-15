@@ -220,7 +220,7 @@ gwb_optable gwb_duops[] = {
   0x95, "ASC",
   0x96, "CHR$",
   0x97, "PEEK",
-  0x90, "SPACE$",
+  0x98, "SPACE$",
   0x99, "OCT$",
   0x9a, "HEX$",
   0x9b, "LPOS", 

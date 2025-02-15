@@ -25,6 +25,9 @@
 #include <stdio.h>
 #include <errno.h>
 #include <stdarg.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <string.h>
 
 /* On the NeXT the basic curses is lame! */
 #if defined(NeXT)

@@ -45,7 +45,7 @@ gwb_optable gwb_ops[] = {
 0x9c,"LINE",
 0x9d,"EDIT",
 0x9e,"ERROR",
-0x9f,"RESUM",
+0x9f,"RESUME",
 0xa0,"OUT",
 0xa1,"ON",
 0xa2,"OPEN",
@@ -85,7 +85,7 @@ gwb_optable gwb_ops[] = {
 0xc4,"STRING$",
 0xc5,"INSTR",
 0xc6,"POINT",
-0xc7,"TIMES",
+0xc7,"TIME$",
 0xc8,"MEM",
 0xc9,"INKEY$",
 0xca,"THEN",
@@ -95,6 +95,9 @@ gwb_optable gwb_ops[] = {
 0xce,"-",
 0xcf,"*",
 0xd0,"/",
+0xd1,"^", /* This works for TRS80 Model III" */ 
+0xd2,"AND", /* This works for TRS80 Model III" */ 
+0xd3,"OR", /* This works for TRS80 Model III" */  
 0xd4,">",
 0xd5,"=",
 0xd6,"<",
@@ -121,6 +124,7 @@ gwb_optable gwb_ops[] = {
 0xeb,"LOF",
 0xec,"MKI$",
 0xed,"MKS$",
+0xee,"MKD$", 
 0xef,"CINT",
 0xf0,"CSNG",
 0xf1,"CDBL",

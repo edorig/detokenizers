@@ -26,6 +26,9 @@
 #include "gwb_commands.h"
 
 static Program *ge_prog;
+Program *gi_open(char*);
+int ge_new (char*);
+int gx_process();
 
 
 int ge_credits(char *buf)
@@ -249,7 +252,7 @@ int ge_auto(char *buf)
     printf("%d%c", start, found);
     fflush(stdout);
 
-    if (!gets(code)) {
+    if (!fgets(code,BUFSIZ,stdin)) {
       printf("\n");
       clearerr(stdout);
       return 1;

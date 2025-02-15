@@ -45,7 +45,7 @@ GW	= gwb_interpreter.o
 CPM	= cpm_interpreter.o
 COCO	= coco.o 
 DRAG	= dragon.o
-TRS4	= trs4m.o
+TRS4	= trsm4.o
 #SOR	= sorcerer.o 
 #OSI	= osi.o
 #XTAL   = xtal.o
@@ -84,10 +84,10 @@ $(BINARY5): $(HEADERS) $(OBJECTS) $(COCO)
 $(BINARY6): $(HEADERS) $(OBJECTS) $(DRAG) 
 	$(CC) $(CFLAGS) -o $(BINARY6) $(OBJECTS) $(DRAG) $(LIBS)
 
-$(BINARY7): $(HEADERS) $(OBJECTS) $(DRAG) 
-	$(CC) $(CFLAGS) -o $(BINARY6) $(OBJECTS) $(TRS4) $(LIBS)
+$(BINARY7): $(HEADERS) $(OBJECTS) $(TRS4) 
+	$(CC) $(CFLAGS) -o $(BINARY7) $(OBJECTS) $(TRS4) $(LIBS)
 clean:
-	-rm -f $(OBJECTS) $(BINARY) *~
+	rm -f *.o $(BINARY) *~
 
 tests:	$(BINARY)
 	echo "Under version 2.0 simple tests are not possible"

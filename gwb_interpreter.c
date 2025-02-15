@@ -66,7 +66,7 @@ char *gi_futz_byte(const u_char op, gwb_optable gop[])
     for (idx = 0; gop[idx].opcode && gop[idx].opcode != op; ++idx);
     if (!gop[idx].opcode) {
       if (op < 0x1b) x += sprintf(&buf[x], "%d", (op - 0x11));
-      else x += sprintf(&buf[x], " [opcode %2.2#x] ", op);
+      else x += sprintf(&buf[x], " [opcode %#2.2x] ", op);
     } else {
       x += sprintf(&buf[x], "%s", gop[idx].name);
     }
