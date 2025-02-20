@@ -1,7 +1,7 @@
 /* 
    Copyright (C) 1994,1995,1996,2011 Free Software Foundation, Inc.
    Written by Christian A. Ratliff
-   Modified for use with MBASIC for CP/M 80 by Edmond Orignac 
+   Modified for use with Dragon 32 for CP/M 80 by Edmond Orignac 
 
    This file is part of the mbasic translator.
 
@@ -96,8 +96,11 @@ char *gi_show(FILE *fp)
       return (char *)tmp;
       break;
     }
-    case 0x0e: /* a number designator, used for GOTO and GOSUB */
-      x += sprintf(&buf[x], "%d", (fgetc(fp) | (fgetc(fp) << 8)));
+      /*    case 0x0e: a number designator, used for GOTO and GOSUB 
+	    This does not apply with the Dragon, line numbers 
+	    after GOTO or GOSUB  are represented by the figures in 
+	    ASCII. 
+      x += sprintf(&buf[x], "%d", (fgetc(fp) | (fgetc(fp) << 8))); */
       break;
     case 0xf:
       x += sprintf(&buf[x], "%d", fgetc(fp));
@@ -105,15 +108,16 @@ char *gi_show(FILE *fp)
     case 0x1c:
       x += sprintf(&buf[x], "%d", (fgetc(fp) | (fgetc(fp) << 8)));
       break;
-    case 0x30:
-      x += sprintf(&buf[x], "%s", gi_futz_byte(fgetc(fp), gwb_duops));
+      /*    case 0x30:
+      x += sprintf(&buf[x], "%s", gi_futz_byte(fgetc(fp), gwb_duops)); 
+      This is causing some bugs with line numbers */ 
     case '(':   
-    case 0xf0:
-    case 0xf3:
-    case 0xf4:
-    case 0xf5:
-    case 0xf6: 
-    case 0xf2: { /* this is a numeric operation, try to read a number */
+      //    case 0xf0:
+    case 0xc3:
+    case 0xc4:
+    case 0xc5:
+    case 0xc7: 
+    case 0xcb: { /* this is a numeric operation, try to read a number */
       int c;
       if ((c = fgetc(fp)) > 0x80) {
 	ungetc(c, fp);
@@ -217,7 +221,8 @@ Line *gi_parse(FILE *fp)
 
   /* first read off the four 'control bytes' and build the line number */
   cb[0] = fgetc(fp); cb[1] = fgetc(fp); cb[2] = fgetc(fp); cb[3] = fgetc(fp);
-  lineno = (cb[2] | (cb[3] << 8));
+  /* The Dragon stores line numbers low byte first, high byte second */ 
+  lineno = (cb[3] | (cb[2] << 8));
 
   /* read in the bytes until we get an EOF or the end of the instruction */
   if ((line = gi_show(fp))) {
