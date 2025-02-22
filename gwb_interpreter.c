@@ -105,8 +105,9 @@ char *gi_show(FILE *fp)
     case 0x1d:
       x += sprintf(&buf[x], "%d", (fgetc(fp) | (fgetc(fp) << 8)));
       break;
-    case 0x30:
-      x += sprintf(&buf[x], "%s", gi_futz_byte(fgetc(fp), gwb_duops));
+      /*    case 0x30:
+	    x += sprintf(&buf[x], "%s", gi_futz_byte(fgetc(fp), gwb_duops)); 
+     EO: This was causing errors, so I commented it out 22/02/2025  */ 
     case '(':
     case 0xe7:
     case 0xe9:

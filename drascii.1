@@ -13,12 +13,15 @@ drascii \- Dragon 32 Basic program files detokenizer
 .SS "Introduction" \"{{{
 .B drascii
 is a detokenizer for Dragon 32  Basic program files. 
-The Dragon 32  was an early popular microcomputer based on the
-Motorola 6809  sold by Dragon Data Ltd. in the 1980s.  
+The Dragon 32  was an early popular 8bit microcomputer based on the
+Motorola 6809  sold by Dragon Data Ltd. in the 1980s. Its Basic is
+similar to the one of the Tandy Color Computer (CoCo). 
   To save space in computer memory and on floppy disks, the Basic keywords were 
-replaced by single byte tokens of ASCII code above 128 (decimal). 
+replaced by single byte tokens of ASCII code above 128
+(decimal). Although the Basic keywords on the Dragon and the CoCo are the
+same, they are represented internally by different tokens on the two machines.  
 \fBdrascii\fP reads 
-an Level II Basic file saved in tokenized format and allows to list 
+a Dragon Basic file saved in tokenized format and allows to list 
 the Basic program and save it in ASCII format. The program may then
 be used with a Unix traditional Basic interpreter such as
 \fBbwbasic(1)\fP,\fPbas(1)\fP or \fBblassic(1)\fP. 
@@ -64,7 +67,7 @@ Returns to the shell.
 turns on some debugging messages. 
 \"}}} 
 .SH SEE ALSO \"{{{
-cpmascii(1) gwascii(1)  msxascii(1) bwbasic(1) bas(1) blassic(1) 
+cocoascii(1) gwascii(1) bwbasic(1) bas(1) blassic(1) 
 \"}}} 
 .SH AUTHOR \"{{{
 This program is copyright 1994\(en2011. 
@@ -84,7 +87,7 @@ along with this program.  If not, write to the Free Software Foundation,
 Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
 .\"}}}
 .SH HISTORY \"{{{
-The original program \fBgwbasic(1)\fP written by Christian Ractliff
+The original program \fBgwbasic(1)\fP written by Christian A. Ratliff
 was a detokenizer for GW-Basic, the IBM-PC Basic interpreter. The
 present program has been modified 
 by Edmond Orignac to detokenize Dragon 32  Basic 
