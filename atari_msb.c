@@ -1,15 +1,17 @@
 /* 
-   Copyright (C) 1994,1995,1996 Free Software Foundation, Inc.
-   Written by Christian A. Ratliff
+   Copyright (C) 1994,1995,1996,2025 Free Software Foundation, Inc.
+   Originally written by Christian A. Ratliff for GWBASIC 
+   Adapted to Atari Microsoft Basic by Edmond Orignac, 
+   with tokens provided by Bruce Watson 
 
-   This file is part of the gwbasic translator.
+   This file is part of the  amsbascii  translator.
 
-   The gwbasic translator is free software; you can redistribute it
+   The  amsbascii translator is free software; you can redistribute it
    and/or modify it under the terms of the GNU General Public License
    as published by the Free Software Foundation; either version 1, or
    (at your option) any later version.
 
-   The gwbasic translator is distributed in the hope that it will be
+   The  amsbascii  translator is distributed in the hope that it will be
    useful, but WITHOUT ANY WARRANTY; without even the implied warranty
    of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU 
    General Public License for more details.
@@ -21,8 +23,9 @@
 /*
  * $Id: gwb_interpreter.c,v 1.3 1996/01/09 03:39:05 ratlifc Exp $
  */
-
-#include "gwb_interpreter.h"
+#include <string.h> 
+#include <stdlib.h> 
+#include "atarimsb.h"
 
 float gi_power(float value, int expo)
 {
@@ -66,7 +69,7 @@ char *gi_futz_byte(const u_char op, gwb_optable gop[])
     for (idx = 0; gop[idx].opcode && gop[idx].opcode != op; ++idx);
     if (!gop[idx].opcode) {
       if (op < 0x1b) x += sprintf(&buf[x], "%d", (op - 0x11));
-      else x += sprintf(&buf[x], " [opcode %#2.2x] ", op);
+      else x += sprintf(&buf[x], " [opcode %2x] ", op);
     } else {
       x += sprintf(&buf[x], "%s", gop[idx].name);
     }
@@ -105,16 +108,15 @@ char *gi_show(FILE *fp)
     case 0x1d:
       x += sprintf(&buf[x], "%d", (fgetc(fp) | (fgetc(fp) << 8)));
       break;
-      /* case 0x30:
-	    x += sprintf(&buf[x], "%s", gi_futz_byte(fgetc(fp), gwb_duops)); 
-	     This was causing errors, so I commented it out 22/02/2025  */ 
+      /*    As in the Dragon MSBASIC, this is not needed 
+	    case 0x30:
+	    x += sprintf(&buf[x], "%s", gi_futz_byte(fgetc(fp), gwb_duops)); */ 
     case '(':
-    case 0xe7:
-    case 0xe9:
-    case 0xea:
-    case 0xeb:
-    case 0xed: 
-    case 0xec: { /* this is a numeric operation, try to read a number */
+    case 0xee: /* + in Atari Microsoft BASIC*/
+    case 0xef: /* - in Atari MSB*/
+    case 0xf0: /* * in MSB*/ 
+    case 0xf1: /* / in MSB*/ 
+    case 0xf2: { /* this is a numeric operation, try to read a number */
       int c;
       if ((c = fgetc(fp)) > 0x80) {
 	ungetc(c, fp);
@@ -139,43 +141,42 @@ char *gi_show(FILE *fp)
 	  break;
 
 	case 0x1c:
-	   x += sprintf(&buf[x], "%s%d", gi_futz_byte(b, gwb_ops),(fgetc(fp) | (fgetc(fp) << 8))); 
-	   break; 
+	  {
+	    int hw1=fgetc(fp),hw2=fgetc(fp);
+	    int zog1=265*hw2+hw1; 
+	    x+=sprintf(&buf[x],"%s%d",  gi_futz_byte(b, gwb_ops),zog1);
+	  } break;
+/*  MSX computers use BCD arithmetic "with a double precision accuracy of ut to 14 digits" or single precision with 6 digits. A single precision variable occupies 4 bytes, a double precision variable 8 bytes. This means that 1 byte is used to store the exponent, and the other bytes are used to store the mantissa. 1 byte contains two decimal digits in the form 16*digit1+digit2 so that the number can be read in hexadecimal. The alllowable range is 1e-64 to 1e+63, so the exponent takes value from 0-64 to 127-64. There is an unused extra bit, 2^7, used for encoding the sign of the constant.  0x1d = single precision constant, 0x1f = double precision constant.  Sources: MSX BASIC Reference Guide, and Red Book */ 
 	case 0x1d:
 	case 0x1f:
 	  {
 	    int hw1 = fgetc(fp),
-                hw2 = fgetc(fp),
-	        hw3 = fgetc(fp),
-	        hw4 = fgetc(fp);
-
+	      hw2 = fgetc(fp),
+	      hw3 = fgetc(fp),
+	      hw4 = fgetc(fp);
+	      
+	   
 	    if (c != 0x1f) {
-	      float f1 = 0.0, f2 = 0.0, f = 0.0;
-	      
-	      f1 = (float)(((float)hw2 * (float)gi_power(2.0, -15)) +
-			   ((float)hw1 * (float)gi_power(2.0, -23)) +
-			   ((float)hw3 * (float)gi_power(2.0, -7)) + 1.0);
-	      f2 = (float)gi_power(2.0, (hw4 - 129));
-	      
-	      x += sprintf(&buf[x], "%s%2.4f", gi_futz_byte(b, gwb_ops),
-			   (f1*f2));
+	      /* single precision BCD constant: 0x1d ee aa bb cc =10^f(ee)*(aabbcc). Our treatment of exponent is incorrect due to lack of relevant examples. We expect the highest bit of ee to contain sign of the number, second highest bit to contain sign of exponent, lowest bits value of exponents, but we have not seen any examples to check it.  */
+	      	        
+	      if ((hw1 &128)==0) {x += sprintf(&buf[x], "%s.%x%x%xE%+d", gi_futz_byte(b, gwb_ops),hw2,hw3,hw4,((hw1 & 127)-64)); 
+		  } else {
+		x += sprintf(&buf[x], "%s-.%x%x%xE%+d", gi_futz_byte(b, gwb_ops),hw2,hw3,hw4,((hw1 & 127)-64)); 
+	      };
+	       
+	  
 	    } else {
-	      double f1=0.0, f2=0.0;
-              int hw5=fgetc(fp),
+/* 0x1f double precision BCD constant: 0x1d ee aa bb cc dd ff gg hh =10^f(ee)*(aabbccddffgghh)  */ 
+	      int hw5 = fgetc(fp),
                 hw6 = fgetc(fp),
-                hw7 = fgetc(fp),
-                hw8 = fgetc(fp);
-              f1 = (double)(((double)hw1 *(double)gi_power(2.0, -55)) +
-                            ((double)hw2 *(double)gi_power(2.0, -47)) +
-                            ((double)hw3 *(double)gi_power(2.0, -38)) +
-                            ((double)hw4 *(double)gi_power(2.0, -31)) +
-                            ((double)hw6 * (double)gi_power(2.0, -15)) +
-                            ((double)hw5 * (double)gi_power(2.0, -23)) +
-                            ((double)hw7 * (double)gi_power(2.0, -7)) + 1.0);
-              f2 = (double)gi_power(2.0, (hw8 - 129));
-
-              x += sprintf(&buf[x], "%s %2.16G",gi_futz_byte(b, gwb_ops),
-                           (f1*f2));
+	        hw7 = fgetc(fp),
+	        hw8 = fgetc(fp);
+	      
+	    
+	      if ((hw1 &128)==0) {x += sprintf(&buf[x], "%s.%x%x%x%x%x%x%xD%+d",gi_futz_byte(b, gwb_ops),hw2,hw3,hw4,hw5,hw6,hw7,hw8,((hw1 &127)-64));
+	      } else {
+		x += sprintf(&buf[x], "%s-.%x%x%x%x%x%x%xD%+d",gi_futz_byte(b, gwb_ops),hw2,hw3,hw4,hw5,hw6,hw7,hw8,((hw1 &127)-64)); 
+	      };   	      
 	    }
 	  }
 	  break;
@@ -194,13 +195,7 @@ char *gi_show(FILE *fp)
     case 0xff: /* a dual opcode thang */
       x += sprintf(&buf[x], "%s", gi_futz_byte(fgetc(fp), gwb_duops));
       break;
-    case 0xfd: /* a dual opcode thang */
-      x += sprintf(&buf[x], "%s", gi_futz_byte(fgetc(fp), gwb_duopsd));
-      break;
-    case 0xfe: /* a dual opcode thang */
-      x += sprintf(&buf[x], "%s", gi_futz_byte(fgetc(fp), gwb_duopse));
-      break;
-   default:
+    default:
       x += sprintf(&buf[x], "%s", gi_futz_byte(b, gwb_ops));
     }
   }
@@ -260,13 +255,13 @@ Program *gi_open(const char *fname)
   p->line = (Line *)NULL;
 
   if (!(bprog = fopen(fname, "r"))) {
-    perror("gwbasic");
+    perror("msxbasic");
     free(p);
     return (Program *)NULL;
   }
 
-  if (fgetc(bprog) != 0xff) {
-    printf("gwbasic: failed to find gwbasic magic cookie\n");
+  if (fgetc(bprog) != 0x00) {
+    printf("amsbascii: failed to find msxbasic magic cookie\n");
     fclose(bprog);
     free(p);
     return (Program *)NULL;

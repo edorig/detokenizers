@@ -46,6 +46,7 @@ CPM	= cpm_interpreter.o
 COCO	= coco.o 
 DRAG	= dragon.o
 TRS4	= trsm4.o
+AMSB	= atari_msb.o 
 #SOR	= sorcerer.o 
 #OSI	= osi.o
 #XTAL   = xtal.o
@@ -59,10 +60,10 @@ BINARY4	= cpmascii
 BINARY5 = cocoascii
 BINARY6	= drascii
 BINARY7 = trsm4ascii
-
+BINARY8	= amsbascii
 # For the moment, we don't build sorcerer/osi/xtal/nascom/ti99
 
-BINARY= $(BINARY1) $(BINARY2) $(BINARY3) $(BINARY4) $(BINARY5) $(BINARY6) $(BINARY7) 
+BINARY= $(BINARY1) $(BINARY2) $(BINARY3) $(BINARY4) $(BINARY5) $(BINARY6) $(BINARY7) $(BINARY8)
 
 all:	$(BINARY)   
 
@@ -86,6 +87,8 @@ $(BINARY6): $(HEADERS) $(OBJECTS) $(DRAG)
 
 $(BINARY7): $(HEADERS) $(OBJECTS) $(TRS4) 
 	$(CC) $(CFLAGS) -o $(BINARY7) $(OBJECTS) $(TRS4) $(LIBS)
+$(BINARY8): $(HEADERS) $(OBJECTS) $(AMSB)
+	$(CC) $(CFLAGS) -o $(BINARY8) $(OBJECTS) $(AMSB) $(LIBS)
 clean:
 	rm -f *.o $(BINARY) *~
 
