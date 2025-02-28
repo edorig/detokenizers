@@ -248,7 +248,8 @@ Program *gi_open(const char *fname)
   Program *p = (Program *)malloc(sizeof(Program)),
           *head = p;
   Line *l;
-
+  int bronsky,clarky;
+  
   gwb_dprintf("Made it to gi_open(\"%s\")", fname);
 
   p->next = p->prev = (Program *)NULL;
@@ -266,7 +267,9 @@ Program *gi_open(const char *fname)
     free(p);
     return (Program *)NULL;
   }
-
+  bronsky=fgetc(bprog);
+  clarky=fgetc(bprog);
+  printf("Length of file: %d bytes\n",256*bronsky+clarky+3); 
   while ((l = gi_parse(bprog)) != (Line *)NULL) {
     p->next = (Program *)malloc(sizeof(Program));
     p->next->line = l;
