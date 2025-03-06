@@ -1,7 +1,7 @@
 Detokenizers for Microsoft BASIC
 --------------------------------
 
-The present package contains the source for 12 detokenizers for 
+The present package contains the source for 13 detokenizers for 
 different flavors of Microsoft BASIC. 
 
 trs80ascii:	TRS-80 Model I, BASIC Level II 
@@ -11,6 +11,7 @@ gwascii:	GW-BASIC (IBM PC and compatibles)
 cpmascii:	Microsoft BASIC for CP/M-80 
 cocoascii:	Tandy Color Computer BASIC
 drascii:	Dragon 32/64 BASIC 
+amsbascii:	Microsoft Basic for 8-bit Atari (400/800/600XL/800XL/1200XL/65XE/130XE) 
 
 osiascii:	Ohio Scientific Instruments 8K BASIC in ROM
 sorcascii:	Exidy Sorcerer 
@@ -21,10 +22,11 @@ compucolorascii: Compucolor
 The detokenizer for TRS-80 Model I and 4, CP/M BASIC, GW BASIC and MSX BASIC have been 
 tested with many programs and have worked correctly. The detokenizer
 for CoCo BASIC has been tested with 3 programs with correct results. 
-The Dragon BASIC is  untested, but is likely to work correctly. 
+The Dragon BASIC one has been tested on a single program with correct results.
+The Atari one was tested on 4 programs with correct results.  
 
 The last five detokenizers, for
-Exidy Sorcerer, Compucolor, OSI Challenger, Nascom and Crystal Basic are also
+Exidy Sorcerer, Compucolor, OSI Challenger, Nascom and Crystal Basic are 
 untested.  The list of tokens for the
 Sorcerer was incomplete (the LOG function was missing) and it is
 unclear that tokenized BASIC programs for these machines will 
@@ -66,7 +68,7 @@ More details can be found in the Manual pages.
 Installation:
 ------------
 On Unix, BSD, Linux, MacOSX:  
-Typing make will compile the programs for TRS-80s,CoCo,Dragon,CP/M,MSX
+Typing make will compile the programs for Atari,TRS-80s,CoCo,Dragon,CP/M,MSX
 and GW BASICs. 
 make install will install the programs in /usr/local/bin/ 
 Change INSTDIR in the makefile to modify the location. 
@@ -86,7 +88,8 @@ Building your own detokenizer or fixing an untested one:
 
 This assumes that the Basic is of the Microsoft type. 
 In that case, a tokenized Basic program will begin with 
-0xff byte. 
+0xff byte (Atari being the exception, the program starts with 0x00 followed
+by two bytes indicating program length). 
 The format of a line is: 
 
 o first 2 bytes: memory address (can be discarded) 
@@ -156,7 +159,7 @@ if the interpreter is not using 0xff before function tokens
 2. cpm_interpreter.c  if the interpreter is inserting 0xff before 
 function tokens
 
-In doubt, it is better to assume start with trs_interpreter.c as
+In doubt, it is better to assume single tokens and start with trs_interpreter.c as
 template. If 0xff is used to prefix functions, the listing will
 then contain [opcode ff] in the middle of Basic statements, and 
 one will just have to switch to cpm_interpreter.c 

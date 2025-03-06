@@ -29,7 +29,8 @@ typedef struct {
   char *name;
 } gwb_optable;
 
-/* With some improvements using  extra info on GW-BASIC tokenised program format. */ 
+/* With some improvements using  extra info on GW-BASIC tokenised program format. 
+Source: https://www.chebucto.ns.ca/~af380/GW-BASIC-tokens.html */ 
 
 gwb_optable gwb_ops[] = {
   0x81, "END",
@@ -49,7 +50,7 @@ gwb_optable gwb_ops[] = {
   0x8f, "REM",
   0x90, "STOP",  
   0x91, "PRINT", 
-  0x92, "LEN", /* Some doc. mentions CLEAR instead */ 
+  0x92, "CLEAR",
   0x93, "LIST", 
   0x94, "NEW", 
   0x95, "ON",

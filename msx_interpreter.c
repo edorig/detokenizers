@@ -107,8 +107,9 @@ char *gi_show(FILE *fp)
     case 0x1d:
       x += sprintf(&buf[x], "%d", (fgetc(fp) | (fgetc(fp) << 8)));
       break;
-    case 0x30:
-      x += sprintf(&buf[x], "%s", gi_futz_byte(fgetc(fp), gwb_duops));
+      /*    case 0x30:
+	    x += sprintf(&buf[x], "%s", gi_futz_byte(fgetc(fp), gwb_duops)); 
+      EO: This is causing issues as with GW-BASIC*/ 
     case '(':
     case 0xef: /* = in MSX-Basic*/
     case 0xf1: /* + in MSX-Basic*/

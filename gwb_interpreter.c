@@ -98,27 +98,77 @@ char *gi_show(FILE *fp)
     case 0x0e: /* a number designator, used for GOTO and GOSUB */
       x += sprintf(&buf[x], "%d", (fgetc(fp) | (fgetc(fp) << 8)));
       break;
+      /* a single byte */ 
     case 0xf:
       x += sprintf(&buf[x], "%d", fgetc(fp));
       break;
+      /* Two bytes in hexadecimal format */ 
+      case 0xc: {
+	  int hw1 = fgetc(fp),
+	      hw2 = fgetc(fp);
+	  x += sprintf(&buf[x], "&H%2.2X%2.2X",
+		       hw2, hw1);
+	}
+	  break;
+	  /* 2 bytes in decimal format */ 
     case 0x1c:
-    case 0x1d:
       x += sprintf(&buf[x], "%d", (fgetc(fp) | (fgetc(fp) << 8)));
       break;
+      /* A floating point number */ 
+    case 0x1d:
+    case 0x1f:
+      {
+	int hw1 = fgetc(fp),
+	  hw2 = fgetc(fp),
+	  hw3 = fgetc(fp),
+	  hw4 = fgetc(fp);
+	
+	if (b!= 0x1f) { /* single precision */ 
+	  float f1 = 0.0, f2 = 0.0, f = 0.0;
+	  
+	  f1 = (float)(((float)hw2 * (float)gi_power(2.0, -15)) +
+		       ((float)hw1 * (float)gi_power(2.0, -23)) +
+		       ((float)hw3 * (float)gi_power(2.0, -7)) + 1.0);
+	  f2 = (float)gi_power(2.0, (hw4 - 129));
+	  
+	  x += sprintf(&buf[x], " %2.4f",(f1*f2));
+	} else { /* Double precision */ 
+	  double f1=0.0, f2=0.0;
+	  int hw5=fgetc(fp),
+	    hw6 = fgetc(fp),
+	    hw7 = fgetc(fp),
+	    hw8 = fgetc(fp);
+	  f1 = (double)(((double)hw1 *(double)gi_power(2.0, -55)) +
+			((double)hw2 *(double)gi_power(2.0, -47)) +
+			((double)hw3 *(double)gi_power(2.0, -38)) +
+			((double)hw4 *(double)gi_power(2.0, -31)) +
+			((double)hw6 * (double)gi_power(2.0, -15)) +
+			((double)hw5 * (double)gi_power(2.0, -23)) +
+			((double)hw7 * (double)gi_power(2.0, -7)) + 1.0);
+	  f2 = (double)gi_power(2.0, (hw8 - 129));
+	  
+	  x += sprintf(&buf[x], " %2.16G",(f1*f2));
+	}
+      }
+      break;
+
       /* case 0x30:
 	    x += sprintf(&buf[x], "%s", gi_futz_byte(fgetc(fp), gwb_duops)); 
 	     This was causing errors, so I commented it out 22/02/2025  */ 
     case '(':
-    case 0xe7:
-    case 0xe9:
-    case 0xea:
-    case 0xeb:
-    case 0xed: 
-    case 0xec: { /* this is a numeric operation, try to read a number */
+    case 0xe7: /* = */
+    case 0xe9: /* + */ 
+    case 0xea: /* - */ 
+    case 0xeb: /* multiplication */
+    case 0xed: /* division */ 
+    case 0xec: { /* ^  */ 
+      /* this is a numeric operation, try to read a number */
       int c;
       if ((c = fgetc(fp)) > 0x80) {
 	ungetc(c, fp);
 	x += sprintf(&buf[x], "%s", gi_futz_byte(b, gwb_ops));
+
+	
       } else {
 
 	switch (c) {
