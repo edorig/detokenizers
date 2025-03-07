@@ -100,12 +100,51 @@ char *gi_show(FILE *fp)
     case 0x0e: /* a number designator, used for GOTO and GOSUB */
       x += sprintf(&buf[x], "%d", (fgetc(fp) | (fgetc(fp) << 8)));
       break;
-    case 0xf:
+    case 0xf: /* a single byte */ 
       x += sprintf(&buf[x], "%d", fgetc(fp));
       break;
-    case 0x1c:
-    case 0x1d:
+    case 0xc: { /* a 16bit integer in hexadecimal format*/ 
+	  int hw1 = fgetc(fp),
+	      hw2 = fgetc(fp);
+	  x += sprintf(&buf[x], " &H%2.2X%2.2X", hw2, hw1);
+	}
+	  break;
+      
+    case 0x1c: /* 16 bit integer in decimal format */ 
       x += sprintf(&buf[x], "%d", (fgetc(fp) | (fgetc(fp) << 8)));
+      break;
+    case 0x1d: /* BCD decimal constant */ 
+    case 0x1f:
+      {
+	int hw1 = fgetc(fp), /* exponent and sign*/
+	  hw2 = fgetc(fp), /* mantissa */ 
+	  hw3 = fgetc(fp),
+	  hw4 = fgetc(fp);
+	      
+	   
+	if (b != 0x1f) {
+	  /* single precision BCD constant  */
+	  
+	  if ((hw1 &128)==0) {x += sprintf(&buf[x], ".%x%x%xE%+d",hw2,hw3,hw4,((hw1 & 127)-64)); 
+	  } else {
+	    x += sprintf(&buf[x], "-.%x%x%xE%+d",hw2,hw3,hw4,((hw1 & 127)-64)); 
+	  };
+	  
+	  
+	} else {
+/* 0x1f double precision BCD constant  */ 
+	  int hw5 = fgetc(fp), /* extra digits */ 
+	    hw6 = fgetc(fp),
+	    hw7 = fgetc(fp),
+	    hw8 = fgetc(fp);
+	      
+	    
+	  if ((hw1 &128)==0) {x += sprintf(&buf[x], ".%x%x%x%x%x%x%xD%+d",hw2,hw3,hw4,hw5,hw6,hw7,hw8,((hw1 &127)-64));
+	  } else {
+	    x += sprintf(&buf[x], "-.%x%x%x%x%x%x%xD%+d",hw2,hw3,hw4,hw5,hw6,hw7,hw8,((hw1 &127)-64)); 
+	  };   	      
+	}
+      }
       break;
       /*    case 0x30:
 	    x += sprintf(&buf[x], "%s", gi_futz_byte(fgetc(fp), gwb_duops)); 

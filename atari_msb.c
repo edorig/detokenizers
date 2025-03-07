@@ -55,7 +55,7 @@ char *gi_binary(int byte, char *buf)
   return (char *)buf;
 }
 
-char *gi_futz_byte(const u_char op, gwb_optable gop[])
+char *gi_futz_byte(const u_char op, gwb_optable gop[],int instring)
 {
   static char buf[BUFSIZ];
   int x = 0,
@@ -63,13 +63,16 @@ char *gi_futz_byte(const u_char op, gwb_optable gop[])
   bzero(buf, BUFSIZ);
 
   /* if this is a normal printable ASCII character then display it */
-  if (op >= 0x20 && op < 0x7F) {
-    buf[x++] = op;
+  if ((op >= 0x20 && op < 0x7F)||(instring==1)) {
+    if (op!=0x7c) {
+      buf[x++] = op;
+    } else {
+      buf[x++]=0x22; /* | is used for closing strings */ 
+    } 
   } else {
     for (idx = 0; gop[idx].opcode && gop[idx].opcode != op; ++idx);
     if (!gop[idx].opcode) {
-      if (op < 0x1b) x += sprintf(&buf[x], "%d", (op - 0x11));
-      else x += sprintf(&buf[x], " [opcode %2x] ", op);
+      x += sprintf(&buf[x], " [opcode %2x] ", op);
     } else {
       x += sprintf(&buf[x], "%s", gop[idx].name);
     }
@@ -84,7 +87,8 @@ char *gi_show(FILE *fp)
   u_char b;
   u_char buf[BUFSIZ];
   int x = 0;
-
+  int instring;
+  
   memset(buf, 0, BUFSIZ);
   
   for (b = fgetc(fp); !feof(fp); b = fgetc(fp)) {
@@ -98,19 +102,19 @@ char *gi_show(FILE *fp)
       return (char *)tmp;
       break;
     }
-    case 0x0e: /* a number designator, used for GOTO and GOSUB */
-      x += sprintf(&buf[x], "%d", (fgetc(fp) | (fgetc(fp) << 8)));
+
+    case 0x22: { /* beginning of a string */ 
+      instring=1;
+      buf[x++]=b;
       break;
-    case 0xf:
-      x += sprintf(&buf[x], "%d", fgetc(fp));
+    }
+      
+    case 0x7c: { /* end of a string */ 
+      instring=0;
+      buf[x++]=0x22;
       break;
-    case 0x1c:
-    case 0x1d:
-      x += sprintf(&buf[x], "%d", (fgetc(fp) | (fgetc(fp) << 8)));
-      break;
-      /*    As in the Dragon MSBASIC, this is not needed 
-	    case 0x30:
-	    x += sprintf(&buf[x], "%s", gi_futz_byte(fgetc(fp), gwb_duops)); */ 
+    }
+      
     case '(':
     case 0xee: /* + in Atari Microsoft BASIC*/
     case 0xef: /* - in Atari MSB*/
@@ -120,83 +124,30 @@ char *gi_show(FILE *fp)
       int c;
       if ((c = fgetc(fp)) > 0x80) {
 	ungetc(c, fp);
-	x += sprintf(&buf[x], "%s", gi_futz_byte(b, gwb_ops));
+	x += sprintf(&buf[x], "%s", gi_futz_byte(b, gwb_ops,instring));
       } else {
 
 	switch (c) {
 	case '\"':
-	  x += sprintf(&buf[x], "%s%c%c", gi_futz_byte(b, gwb_ops), c,
+	  x += sprintf(&buf[x], "%s%c%c", gi_futz_byte(b, gwb_ops,instring), c,
 		       fgetc(fp));
-	  break;
-	case 0xc: {
-	  int hw1 = fgetc(fp),
-	      hw2 = fgetc(fp);
-	  x += sprintf(&buf[x], "%s&H%2.2X%2.2X", gi_futz_byte(b, gwb_ops),
-		       hw2, hw1);
-	}
-	  break;
-
-	case 0xf:
-	  x += sprintf(&buf[x], "%s%d", gi_futz_byte(b, gwb_ops), fgetc(fp));
-	  break;
-
-	case 0x1c:
-	  {
-	    int hw1=fgetc(fp),hw2=fgetc(fp);
-	    int zog1=265*hw2+hw1; 
-	    x+=sprintf(&buf[x],"%s%d",  gi_futz_byte(b, gwb_ops),zog1);
-	  } break;
-/*  MSX computers use BCD arithmetic "with a double precision accuracy of ut to 14 digits" or single precision with 6 digits. A single precision variable occupies 4 bytes, a double precision variable 8 bytes. This means that 1 byte is used to store the exponent, and the other bytes are used to store the mantissa. 1 byte contains two decimal digits in the form 16*digit1+digit2 so that the number can be read in hexadecimal. The alllowable range is 1e-64 to 1e+63, so the exponent takes value from 0-64 to 127-64. There is an unused extra bit, 2^7, used for encoding the sign of the constant.  0x1d = single precision constant, 0x1f = double precision constant.  Sources: MSX BASIC Reference Guide, and Red Book */ 
-	case 0x1d:
-	case 0x1f:
-	  {
-	    int hw1 = fgetc(fp),
-	      hw2 = fgetc(fp),
-	      hw3 = fgetc(fp),
-	      hw4 = fgetc(fp);
-	      
-	   
-	    if (c != 0x1f) {
-	      /* single precision BCD constant: 0x1d ee aa bb cc =10^f(ee)*(aabbcc). Our treatment of exponent is incorrect due to lack of relevant examples. We expect the highest bit of ee to contain sign of the number, second highest bit to contain sign of exponent, lowest bits value of exponents, but we have not seen any examples to check it.  */
-	      	        
-	      if ((hw1 &128)==0) {x += sprintf(&buf[x], "%s.%x%x%xE%+d", gi_futz_byte(b, gwb_ops),hw2,hw3,hw4,((hw1 & 127)-64)); 
-		  } else {
-		x += sprintf(&buf[x], "%s-.%x%x%xE%+d", gi_futz_byte(b, gwb_ops),hw2,hw3,hw4,((hw1 & 127)-64)); 
-	      };
-	       
-	  
-	    } else {
-/* 0x1f double precision BCD constant: 0x1d ee aa bb cc dd ff gg hh =10^f(ee)*(aabbccddffgghh)  */ 
-	      int hw5 = fgetc(fp),
-                hw6 = fgetc(fp),
-	        hw7 = fgetc(fp),
-	        hw8 = fgetc(fp);
-	      
-	    
-	      if ((hw1 &128)==0) {x += sprintf(&buf[x], "%s.%x%x%x%x%x%x%xD%+d",gi_futz_byte(b, gwb_ops),hw2,hw3,hw4,hw5,hw6,hw7,hw8,((hw1 &127)-64));
-	      } else {
-		x += sprintf(&buf[x], "%s-.%x%x%x%x%x%x%xD%+d",gi_futz_byte(b, gwb_ops),hw2,hw3,hw4,hw5,hw6,hw7,hw8,((hw1 &127)-64)); 
-	      };   	      
-	    }
-	  }
 	  break;
 
 	default:
 	  if (c > 0x1F)
-	    x += sprintf(&buf[x], "%s%c", gi_futz_byte(b, gwb_ops), c);
+	    x += sprintf(&buf[x], "%s%c", gi_futz_byte(b, gwb_ops,instring), c);
 	  else
-	    x += sprintf(&buf[x], "%s%d", gi_futz_byte(b, gwb_ops), (c-0x11));
+	    x += sprintf(&buf[x], "%s%d", gi_futz_byte(b, gwb_ops,instring), (c-0x11));
 	}
       }
     }
       break;
-    case 0x94: /* the second part of the timer opcode */
-      break;
+
     case 0xff: /* a dual opcode thang */
-      x += sprintf(&buf[x], "%s", gi_futz_byte(fgetc(fp), gwb_duops));
+      x += sprintf(&buf[x], "%s", gi_futz_byte(fgetc(fp), gwb_duops,instring));
       break;
     default:
-      x += sprintf(&buf[x], "%s", gi_futz_byte(b, gwb_ops));
+      x += sprintf(&buf[x], "%s", gi_futz_byte(b, gwb_ops,instring));
     }
   }
   if (*buf) {
@@ -256,13 +207,13 @@ Program *gi_open(const char *fname)
   p->line = (Line *)NULL;
 
   if (!(bprog = fopen(fname, "r"))) {
-    perror("msxbasic");
+    perror("amsbasic");
     free(p);
     return (Program *)NULL;
   }
 
   if (fgetc(bprog) != 0x00) {
-    printf("amsbascii: failed to find msxbasic magic cookie\n");
+    printf("amsbascii: failed to find amsbasic magic cookie\n");
     fclose(bprog);
     free(p);
     return (Program *)NULL;
