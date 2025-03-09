@@ -105,8 +105,44 @@ char *gi_show(FILE *fp)
     case 0x1c:
       x += sprintf(&buf[x], "%d", (fgetc(fp) | (fgetc(fp) << 8)));
       break;
-    case 0x30:
-      x += sprintf(&buf[x], "%s", gi_futz_byte(fgetc(fp), gwb_duops));
+      /* A floating point number */ 
+    case 0x1d:
+    case 0x1f:
+      {
+        int hw1 = fgetc(fp),
+          hw2 = fgetc(fp),
+          hw3 = fgetc(fp),
+          hw4 = fgetc(fp);
+        
+        if (b!= 0x1f) { /* single precision */ 
+          float f1 = 0.0, f2 = 0.0, f = 0.0;
+          
+          f1 = (float)(((float)hw2 * (float)gi_power(2.0, -15)) +
+                       ((float)hw1 * (float)gi_power(2.0, -23)) +
+                       ((float)hw3 * (float)gi_power(2.0, -7)) + 1.0);
+          f2 = (float)gi_power(2.0, (hw4 - 129));
+          
+          x += sprintf(&buf[x], " %2.4f",(f1*f2));
+        } else { /* Double precision */ 
+          double f1=0.0, f2=0.0;
+          int hw5=fgetc(fp),
+            hw6 = fgetc(fp),
+            hw7 = fgetc(fp),
+	    hw8 = fgetc(fp);
+          f1 = (double)(((double)hw1 *(double)gi_power(2.0, -55)) +
+                        ((double)hw2 *(double)gi_power(2.0, -47)) +
+                        ((double)hw3 *(double)gi_power(2.0, -38)) +
+                        ((double)hw4 *(double)gi_power(2.0, -31)) +
+                        ((double)hw6 * (double)gi_power(2.0, -15)) +
+                        ((double)hw5 * (double)gi_power(2.0, -23)) +
+                        ((double)hw7 * (double)gi_power(2.0, -7)) + 1.0);
+          f2 = (double)gi_power(2.0, (hw8 - 129));
+          
+          x += sprintf(&buf[x], " %2.16G",(f1*f2));
+        }
+      }
+      break;
+      
     case '(':   
     case 0xf0:
     case 0xf3:
