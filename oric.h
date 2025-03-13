@@ -1,9 +1,13 @@
+#include "gwbasic.h"
+
+
+
 typedef struct {
   int opcode;
   char *name;
 } gwb_optable;
 
-
+/* Sources for the tokens:  Theoric no. 3 p. 14 (09/1984) and Theoric no. 10 p. 29 (07-08/1985) */ 
 gwb_optable gwb_ops[] = {
 0x80,"END",
 0x81,"EDIT",
@@ -24,15 +28,15 @@ gwb_optable gwb_ops[] = {
 0x90,"NEXT",
 0x91,"DATA",
 0x92,"INPUT",
-0x93,"DIM",
+0x93,"DIM ",
 0x94,"CLS",
 0X95,"READ",
 0x96,"LET",
-0x97,"GOTO",
+0x97,"GOTO ",
 0x98,"RUN",
-0x99,"IF",
+0x99,"IF ",
 0x9a,"RESTORE",
-0x9b,"GOSUB",
+0x9b,"GOSUB ",
 0x9c,"RETURN",
 0x9d,"REM",
 0x9e,"HIMEM",
@@ -54,8 +58,8 @@ gwb_optable gwb_ops[] = {
 0xae,"PATTERN",
 0xaf,"FILL",
 0xb0,"CHAR",
-0xb1,"PAPER",
-0xb2,"INK",
+0xb1,"PAPER ",
+0xb2,"INK ",
 0xb3,"STOP",
 0xb4,"0N",
 0xb5,"WAIT",
@@ -63,24 +67,24 @@ gwb_optable gwb_ops[] = {
 0xb7,"CSAVE",
 0xb8,"DEF",
 0xb9,"POKE",
-0xba,"PRINT",
+0xba,"PRINT ",
 0xbb,"CONT",
 0xbc,"LIST",
 0xbd,"CLEAR",
-0xbe,"GET",
+0xbe,"GET ",
 0xbf,"CALL",
 0xc0,"!",
 0xc1,"NEW",
 0xc2,"TAB(",
-0xc3,"TO",
+0xc3,"TO ",
 0xc4,"FN",
 0xc5,"SPC(",
 0xc6,"@",
 0xc7,"AUTO",
-0xc8,"ELSE",
-0xc9,"THEN",
+0xc8,"ELSE ",
+0xc9," THEN ",
 0xca,"NOT",
-0xcb,"STEP",
+0xcb,"STEP ",
 0xcc,"+",
 0xcd,"-",
 0xce,"*",
@@ -122,6 +126,7 @@ gwb_optable gwb_ops[] = {
 0xf3,"POINT",
 0xf4,"LEFT$",
 0xf5,"RIGHT$",
+0xf6,"MID$", 
 0x00, 0
 };
 

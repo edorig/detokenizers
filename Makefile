@@ -31,12 +31,14 @@ LIBS	= -lncurses -ltermcap
 INSTDIR = /usr/local/bin/ 
 
 MISCFILES= README TODO COPYRIGHT CHANGES README.MSX README.2
-MAN	= trs80ascii.1 msxascii.1 gwascii.1 cpmascii.1 
-HEADERS	= gwbasic.h trs80.h cpm_interpreter.h  msx_interpreter.h gwb_commands.h\
-	gwb_executor.h gwb_interpreter.h coco.h dragon32.h  
+MAN	= amsbascii.1 cocoascii.1 cpmascii.1 drascii.1 \
+	gwascii.1 msxascii.1 trs80ascii.1 trsm4ascii.1
+HEADERS	= gwbasic.h gwb_commands.h gwb_executor.h \
+	 gwb_interpreter.h coco.h dragon32.h trs80.h\
+	cpm_interpreter.h  msx_interpreter.h  atarimsb.h  oric.h
 SOURCE	= gwb_enviroment.c trs_interpreter.c gwb_commands.c gwb_executor.c \
 	gwb_operands.c cpm_interpreter.c msx_interpreter.c gwb_interpreter.c\
-	coco.c dragon.c trsm4.c 
+	coco.c dragon.c trsm4.c atari_msb.c
 OBJECTS	= gwb_enviroment.o gwb_commands.o gwb_executor.o \
 	gwb_operands.o
 MSX	= msx_interpreter.o 
@@ -46,7 +48,8 @@ CPM	= cpm_interpreter.o
 COCO	= coco.o 
 DRAG	= dragon.o
 TRS4	= trsm4.o
-AMSB	= atari_msb.o 
+AMSB	= atari_msb.o
+ORIC	= oric.o 
 #SOR	= sorcerer.o 
 #OSI	= osi.o
 #XTAL   = xtal.o
@@ -61,9 +64,10 @@ BINARY5 = cocoascii
 BINARY6	= drascii
 BINARY7 = trsm4ascii
 BINARY8	= amsbascii
+BINARY9 = oricascii
 # For the moment, we don't build sorcerer/osi/xtal/nascom/ti99
 
-BINARY= $(BINARY1) $(BINARY2) $(BINARY3) $(BINARY4) $(BINARY5) $(BINARY6) $(BINARY7) $(BINARY8)
+BINARY= $(BINARY1) $(BINARY2) $(BINARY3) $(BINARY4) $(BINARY5) $(BINARY6) $(BINARY7) $(BINARY8) $(BINARY9)
 
 all:	$(BINARY)   
 
@@ -87,8 +91,12 @@ $(BINARY6): $(HEADERS) $(OBJECTS) $(DRAG)
 
 $(BINARY7): $(HEADERS) $(OBJECTS) $(TRS4) 
 	$(CC) $(CFLAGS) -o $(BINARY7) $(OBJECTS) $(TRS4) $(LIBS)
+
 $(BINARY8): $(HEADERS) $(OBJECTS) $(AMSB)
 	$(CC) $(CFLAGS) -o $(BINARY8) $(OBJECTS) $(AMSB) $(LIBS)
+
+$(BINARY9): $(HEADERS) $(OBJECTS) $(ORIC)
+	$(CC) $(CFLAGS) -o $(BINARY9) $(OBJECTS) $(ORIC) $(LIBS)
 clean:
 	rm -f *.o $(BINARY) *~
 
