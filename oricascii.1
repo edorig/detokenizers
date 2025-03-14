@@ -1,35 +1,29 @@
 ' t
-.TH AMSBASCII 1 "February 28, 2025" "" "User commands"
+.TH ORICASCII 1 "March 14, 2025" "" "User commands"
 .SH NAME \"{{{roff}}}\"{{{
-amsbascii \- Microsoft Basic for 8-bit Atari program files detokenizer 
+oricascii \- Microsoft Basic for 8-bit Oric program files detokenizer 
 .\"}}}
 .SH SYNOPSIS \"{{{
 .ad l
-.B amsbascii
+.B oricascii
 .RB [ \-d ]
 .ad b
 .\"}}}
 .SH DESCRIPTION \"{{{
 .SS "Introduction" \"{{{
-.B Amsbascii
-is a detokenizer for Microsoft Basic for Atari
-400/800/600XL/800XL/1200XL/65XE/130XE program files. Atari 8-bit
-microcomputers were built around 6502C microprocessors with
-additional specialized circuits to handle sound	and graphics. They
-had a Basic interpreter on cartridge (400/800 models) or in ROM (all
-the other) that differed from Microsoft BASIC in string
-handling and file access in particular.
-A Basic interpreter on ROM cartridge and on
-floppy disk was developed for these computers by Microsoft. To save space in
-computer memory and on floppy disks, the Basic keywords were 
-replaced by single byte or two-byte tokens. \fBamsbascii\fP reads 
-an Atari Microsoft Basic file saved in tokenized format and allows to list 
+.B oricascii
+is a detokenizer for Microsoft Basic for Oric-1 and Oric Atmos program
+files. Oric 8-bit
+microcomputers were built around MOS 6502C microprocessors.To save space in
+computer memory and on tapes or floppy disks, the Basic keywords were 
+replaced by single byte or two-byte tokens. \fBoricascii\fP reads 
+an MSX-Basic file saved in tokenized format and allows to list 
 the Basic program and save it in ASCII format. The program may then
 be used with a Unix traditional Basic interpreter such as
 \fBbwbasic(1)\fP,\fPbas(1)\fP or \fBblassic(1)\fP. 
 .\"}}}
 .SS "Commands" \"{{{
- Once \fBamsbascii\fP has been started, it expects to receive commands 
+ Once \fBoricascii\fP has been started, it expects to receive commands 
 as a Basic interpreter in direct mode.
 . IP "[\fB auto \fP]"   \"{{{
 Starts automatic line numbering.
@@ -89,7 +83,7 @@ Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
 .SH HISTORY \"{{{
 The original program \fBgwbasic(1)\fP written by Christian A. Ratliff
 was a detokenizer for GW-Basic, the IBM-PC Basic interpreter. The
-present program has been modified (different tokens, BCD arithmetic)
-by Edmond Orignac to detokenize Microsoft BASIC for 8-bit Atari. The
-tokens were found by Bruce Watson.  
+present program has been modified 
+by Edmond Orignac to detokenize Microsoft BASIC on Oric computers. The
+tokens were found in the magazine Theoric (see comments in oric.h). 
 .\"}}}

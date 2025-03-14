@@ -97,18 +97,7 @@ char *gi_show(FILE *fp)
       return (char *)tmp;
       break;
     }
-    case 0x0e: /* a number designator, used for GOTO and GOSUB */
-      x += sprintf(&buf[x], "%d", (fgetc(fp) | (fgetc(fp) << 8)));
-      break;
-    case 0xf:
-      x += sprintf(&buf[x], "%d", fgetc(fp));
-      break;
-    case 0x1c:
-    case 0x1d:
-      x += sprintf(&buf[x], "%d", (fgetc(fp) | (fgetc(fp) << 8)));
-      break;
-      /*    case 0x30:
-	    x += sprintf(&buf[x], "%s", gi_futz_byte(fgetc(fp), gwb_duops)); */  
+ 
     case '(': 
     case 0xd3: /* > sign */ 
     case 0xd5: /* < sign */
@@ -128,57 +117,8 @@ char *gi_show(FILE *fp)
 	  x += sprintf(&buf[x], "%s%c%c", gi_futz_byte(b, gwb_ops), c,
 		       fgetc(fp));
 	  break;
-	case 0xc: {
-	  int hw1 = fgetc(fp),
-	      hw2 = fgetc(fp);
-	  x += sprintf(&buf[x], "%s&H%2.2X%2.2X", gi_futz_byte(b, gwb_ops),
-		       hw2, hw1);
-	}
-	  break;
 
-	case 0xf:
-	  x += sprintf(&buf[x], "%s%d", gi_futz_byte(b, gwb_ops), fgetc(fp));
-	  break;
 
-	case 0x1c:
-	case 0x1d:
-	case 0x1f:
-	  {
-	    int hw1 = fgetc(fp),
-                hw2 = fgetc(fp),
-	        hw3 = fgetc(fp),
-	        hw4 = fgetc(fp);
-
-	    if (c != 0x1f) {
-	      float f1 = 0.0, f2 = 0.0, f = 0.0;
-	      
-	      f1 = (float)(((float)hw2 * (float)gi_power(2.0, -15)) +
-			   ((float)hw1 * (float)gi_power(2.0, -23)) +
-			   ((float)hw3 * (float)gi_power(2.0, -7)) + 1.0);
-	      f2 = (float)gi_power(2.0, (hw4 - 129));
-	      
-	      x += sprintf(&buf[x], "%s%2.7G", gi_futz_byte(b, gwb_ops),
-			   (f1*f2));
-	    } else {
-	      double f1=0.0, f2=0.0;
-	      int hw5=fgetc(fp),
-		hw6 = fgetc(fp),
-	        hw7 = fgetc(fp),
-	        hw8 = fgetc(fp);
-	      f1 = (double)(((double)hw1 *(double)gi_power(2.0, -55)) +
-			    ((double)hw2 *(double)gi_power(2.0, -47)) +
-			    ((double)hw3 *(double)gi_power(2.0, -38)) +
-			    ((double)hw4 *(double)gi_power(2.0, -31)) +
-			    ((double)hw6 * (double)gi_power(2.0, -15)) +
-			    ((double)hw5 * (double)gi_power(2.0, -23)) +
-			    ((double)hw7 * (double)gi_power(2.0, -7)) + 1.0);
-	      f2 = (double)gi_power(2.0, (hw8 - 129));
-
-	      x += sprintf(&buf[x], "%s %2.16G",gi_futz_byte(b, gwb_ops),
-			   (f1*f2));
-	    }
-	  }
-	  break;
 
 	default:
 	  if (c > 0x1F)
@@ -191,9 +131,7 @@ char *gi_show(FILE *fp)
       break;
 
 
-      /*     case 0xff:  a dual opcode thang  (not possible on TRS-80 Model II Basic) 
-      x += sprintf(&buf[x], "%s", gi_futz_byte(fgetc(fp), gwb_duops));
-      break;  */ 
+
 
     default:
       x += sprintf(&buf[x], "%s", gi_futz_byte(b, gwb_ops));
