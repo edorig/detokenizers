@@ -87,7 +87,7 @@ char *gi_show(FILE *fp)
   u_char b;
   u_char buf[BUFSIZ];
   int x = 0;
-  int instring;
+  int instring=0;
   
   memset(buf, 0, BUFSIZ);
   
@@ -100,6 +100,7 @@ char *gi_show(FILE *fp)
       u_char *tmp = (char *)malloc((strlen(buf) * sizeof(char)) + 2);
       strcpy(tmp, buf);
       return (char *)tmp;
+      instring=0; 
       break;
     }
 
@@ -148,6 +149,7 @@ char *gi_show(FILE *fp)
       break;
     default:
       x += sprintf(&buf[x], "%s", gi_futz_byte(b, gwb_ops,instring));
+      if ((b==0x98)||(b==0x9b)) instring=1; 
     }
   }
   if (*buf) {
