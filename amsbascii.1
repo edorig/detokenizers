@@ -24,7 +24,18 @@ floppy disk was developed for these computers by Microsoft. To save space in
 computer memory and on floppy disks, the Basic keywords were 
 replaced by single byte or two-byte tokens. \fBamsbascii\fP reads 
 an Atari Microsoft Basic file saved in tokenized format and allows to list 
-the Basic program and save it in ASCII format. The program may then
+the Basic program and save it in ASCII format. A peculiarity of 8-bit
+Atari computers is that the ASCII codes from 0 to 31 are used for
+graphical or accented characters instead of control codes.
+Switching from one to the other is
+done by a POKE command. If those codes appear inside strings in the
+tokenized program, they will cause some strange displays when listing
+the program on the screen, since they will be interpreted as carriage
+returns, newlines or form feeds. In that case, the program should be
+saved to a file (see below the list command) and the control
+characters changed to accented characters with the filter
+\fBatasciitoutf8.sed\fP filter.
+The program may then
 be used with a Unix traditional Basic interpreter such as
 \fBbwbasic(1)\fP,\fPbas(1)\fP or \fBblassic(1)\fP. 
 .\"}}}
