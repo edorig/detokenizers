@@ -49,7 +49,7 @@ COCO	= coco.o
 DRAG	= dragon.o
 TRS4	= trsm4.o
 AMSB	= atari_msb.o
-ORIC	= oric.o 
+ORIC	= oric.o
 #SOR	= sorcerer.o 
 #OSI	= osi.o
 #XTAL   = xtal.o
@@ -65,6 +65,10 @@ BINARY6	= drascii
 BINARY7 = trsm4ascii
 BINARY8	= amsbascii
 BINARY9 = oricascii
+BINARY10 = to7ascii
+BINARY11 = mc10ascii
+BINARY12 = zba2ascii
+
 # For the moment, we don't build sorcerer/osi/xtal/nascom/ti99
 
 BINARY= $(BINARY1) $(BINARY2) $(BINARY3) $(BINARY4) $(BINARY5) $(BINARY6) $(BINARY7) $(BINARY8) $(BINARY9)
@@ -97,6 +101,16 @@ $(BINARY8): $(HEADERS) $(OBJECTS) $(AMSB)
 
 $(BINARY9): $(HEADERS) $(OBJECTS) $(ORIC)
 	$(CC) $(CFLAGS) -o $(BINARY9) $(OBJECTS) $(ORIC) $(LIBS)
+
+$(BINARY10): to7ascii.c
+	$(CC) $(CFLAGS) -o $(BINARY10) $<
+
+$(BINARY11): mc10ascii.c
+	$(CC) $(CFLAGS) -o $(BINARY11) $<
+
+$(BINARY12): zba2ascii.c
+	$(CC) $(CFLAGS) -o $(BINARY12) $<
+
 clean:
 	rm -f *.o $(BINARY) *~
 

@@ -1,0 +1,53 @@
+' t
+.TH TO7ASCII 1 "November 11, 2025" "" "User commands"
+.SH NAME \"{{{roff}}}\"{{{
+to7ascii \- Microsoft Basic for 8-bit Thomson T07/M05/T07-70 program files detokenizer 
+.\"}}}
+.SH SYNOPSIS \"{{{
+.ad l
+.B to7ascii < tokenized.bas > listing.txt
+.ad b
+.\"}}}
+.SH DESCRIPTION \"{{{
+.SS "Introduction" \"{{{
+.B to7ascii
+is a detokenizer for Microsoft Basic for Thomson TO7/MO5/TO7-70 program
+files. Thomson 8-bit
+microcomputers were built around Motorola 6809 microprocessors and
+were used in French middle and high schools in the 1980s following
+the \fI Informatique pour Tous \fR plan of 1985. To save space in
+computer memory and on tapes or floppy disks, the Basic keywords were 
+replaced by single byte or two-byte tokens. \fBto7ascii\fP reads 
+on stanfard input a  Basic file saved in tokenized format and outputs  
+the Basic program in ASCII format on standard output. The program may then
+be used with a Unix traditional Basic interpreter such as
+\fBbwbasic(1)\fP,\fPbas(1)\fP or \fBblassic(1)\fP. 
+.\"}}}
+
+.SH SEE ALSO \"{{{
+cpmascii(1) gwascii(1) trs80ascii(1) bwbasic(1) bas(1) blassic(1) 
+\"}}} 
+.SH AUTHOR \"{{{
+This program is copyright 2025. 
+.PP
+This program is free software; you can redistribute it and/or modify it
+under the terms of the GNU Lesser General Public License as published
+by the Free Software Foundation; either version 2.1 of the License, or
+(at your option) any later version.
+.PP
+This program is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public
+License for more details.
+.PP
+You should have received a copy of the GNU Lesser General Public License
+along with this program.  If not, write to the Free Software Foundation,
+Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
+.\"}}}
+.SH HISTORY \"{{{
+The program \fBgwbasic\fP written by Christian A. Ratliff
+was a detokenizer for GW-Basic, the IBM-PC Basic interpreter. The
+present program is inspired by it, but given the much simpler
+structure of tokenized Basic on the Thomson it is written as a very
+simple Unix filter. 
+.\"}}}
