@@ -11,18 +11,18 @@ int main()
  
 static char *keyword[128]={ "LONG", "FOR", "COLOR", "PLOT", "CLS", "XELSE", "$86", "NEXT",
     "DATA", "INPUT", "DIM", "READ", "$8C", "GOTO", "$8E", "IF", "RESTORE",
-    "GOSUB", "RETURN", "REM", "?STOP", "ELSE", "TRON ", "TROFF", "$98",
-    "DEFINT", "DEFSNG", "DEFDBL", "FILL", "$9D", "SOUND", "END", "$A0",
-    "ON", "OPEN", "$A3", "$A4", "$A5", "CLOSE", "MACHLG", "LOCATE", "$A9",
+    "GOSUB", "RETURN", "REM", "STOP", "ELSE", "TRON ", "TROFF", "$98",
+    "DEFINT", "DEFSNG", "DEFDBL", "FILL", "SWAP", "SOUND", "END", "$A0",
+    "ON", "OPEN", "ROUTE", "$A4", "$A5", "CLOSE", "MACHLG", "LOCATE", "$A9",
     "$AA", "BOX", "$AC", "CALL", "MODE", "LPRINT ", "DEF", "POKE", "PRINT ",
     "$B3", "DO", "UNTIL", "$B6", "$B7", "?CLEAR", "WHILE", "WEND", "PAGE",
     "$BC", "LINE", "FN", "USR", "$C0", "VARPTR", "INSTR", "POINT", "$C4",
-    "NOT", "$C6", "PEEK", "?TAB", "USING", "?SPC", "WORD?", "TO", "THEN", "STEP", "AND", "OR",
+    "NOT", "$C6", "PEEK", "?TAB", "USING", "SPC", "WORD", "TO", "THEN", "STEP", "AND", "OR",
     "$D1", "$D2", "$D3", "$D4",
-    "LEN", "?VAL", "ASC", "SGN", "?INT", "?ABS", "$DB", "$DC", "SQR",
+    "LEN", "VAL", "ASC", "SGN", "INT", "ABS", "$DB", "$DC", "SQR",
      "RND","LOG", "EXP", "COS", "SIN", "TAN", "ATN", "$E5", "$E6",
-    "MOUSE", "$E8", "$E9", "$EA", "$EB", "$EC", "$ED",
-     "CHR$","?HEX$", "$F0", "$F1", "UNS$", "STR$", "$F4", "$F5", "TIME$",
+    "MOUSE", "$E8", "$E9", "$EA", "PSTR$", "$EC", "$ED",
+     "CHR$","?HEX$", "$F0", "$F1", "UNS$", "STR$", "INDEX$", "$F5", "TIME$",
      "DATE$", "INKEY$", "LEFT$", "RIGHT$", "MID$", "STRING$", "?SPACE$","UCASE$","[line no.] "
     };
  c1=0;
