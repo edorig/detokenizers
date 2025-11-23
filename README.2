@@ -12,18 +12,23 @@ cpmascii:	Microsoft BASIC for CP/M-80
 cocoascii:	Tandy Color Computer BASIC
 drascii:	Dragon 32/64 BASIC 
 amsbascii:	Microsoft Basic for 8-bit Atari (400/800/600XL/800XL/1200XL/65XE/130XE) 
-
+to7ascii:	Microsoft Basic for Thomson (now Thales) TO7/MO5/T07-70
+mc10ascii:	Microsoft Basic for Tandy MC-10 and Matra Alice 32
 osiascii:	Ohio Scientific Instruments 8K BASIC in ROM
 sorcascii:	Exidy Sorcerer 
 nscmascii:	Nascom Basic 
 xtalascii:	Crystal Basic (for Nascom)
 compucolorascii: Compucolor 
 
-The detokenizer for TRS-80 Model I and 4, CP/M BASIC, GW BASIC and MSX BASIC have been 
+In contrast to the other programs, to7ascii and mc10ascii are
+Unix filters not designed to run interactively. 
+The detokenizer for TRS-80 Model I and 4, Tandy MC-10, CP/M BASIC, GW BASIC and MSX BASIC have been 
 tested with many programs and have worked correctly. The detokenizer
 for CoCo BASIC has been tested with 3 programs with correct results. 
 The Dragon BASIC one has been tested on a single program with correct results.
-The Atari one was tested on 4 programs with correct results.  
+The Atari one was tested on 4 programs with correct results.
+The Thomson detokenizer has been tested on 3 programs with correct
+results. 
 
 The last five detokenizers, for
 Exidy Sorcerer, Compucolor, OSI Challenger, Nascom and Crystal Basic are 
@@ -42,6 +47,7 @@ programs on a modern computer.
 Usage:
 -----
 
+Except for mc10ascii and to7ascii 
 start the program by typing at the shell prompt:
 $ xxxascii 
 
@@ -64,6 +70,28 @@ return to the shell by typing:
 system 
 
 More details can be found in the Manual pages. 
+
+For to7ascii or mc10ascii, type 
+
+to7ascii < prog1.bas > prog1.lst 
+
+mc10ascii < prog1.bas > prog1.lst
+
+Detokenizers for Zedcor ZBasic
+------------------------------
+
+zba2ascii:	Detokenizer for ZBasic on Apple II
+zbpc2ascii:	Detokenizer for ZBasic on MS-DOS
+ozbpc2ascii:	Detokenizer for ZBasic on MS-DOS (older format ?) 
+
+These programs are Unix filters, use them like to7ascii.
+
+A complete list of tokens for Apple II or MS-DOS was not available.
+The tokens have been guessed by examining sample programs. Unknown
+tokens will be indicated by hexadecimal codes in the ASCII listing.
+Look at the Zedcor manuals from bitsavers.org for instructions that
+could reasonably correspond to the missing tokens, modify the
+keywords arrays in the C program accordingly and recompile.  
 
 Installation:
 ------------

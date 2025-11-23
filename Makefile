@@ -30,15 +30,18 @@ LIBS	= -lncurses -ltermcap
 # ARCH	= next_mach20
 INSTDIR = /usr/local/bin/ 
 
+# We only build the tested Microsoft BASICs
+# leaving out untested BASICs and the ZBasic on Apple II and MS-DOS
 MISCFILES= README TODO COPYRIGHT CHANGES README.MSX README.2
 MAN	= amsbascii.1 cocoascii.1 cpmascii.1 drascii.1 \
-	gwascii.1 msxascii.1 trs80ascii.1 trsm4ascii.1
+	gwascii.1 msxascii.1 trs80ascii.1 trsm4ascii.1 \
+	to7ascii.1 mc10ascii.1  
 HEADERS	= gwbasic.h gwb_commands.h gwb_executor.h \
 	 gwb_interpreter.h coco.h dragon32.h trs80.h\
 	cpm_interpreter.h  msx_interpreter.h  atarimsb.h  oric.h
 SOURCE	= gwb_enviroment.c trs_interpreter.c gwb_commands.c gwb_executor.c \
 	gwb_operands.c cpm_interpreter.c msx_interpreter.c gwb_interpreter.c\
-	coco.c dragon.c trsm4.c atari_msb.c
+	coco.c dragon.c trsm4.c atari_msb.c to7ascii.c mc10ascii.c 
 OBJECTS	= gwb_enviroment.o gwb_commands.o gwb_executor.o \
 	gwb_operands.o
 MSX	= msx_interpreter.o 
@@ -68,6 +71,8 @@ BINARY9 = oricascii
 BINARY10 = to7ascii
 BINARY11 = mc10ascii
 BINARY12 = zba2ascii
+BINARY13 = zbpc2ascii
+BINARY14 = ozbpc2ascii
 
 # For the moment, we don't build sorcerer/osi/xtal/nascom/ti99
 
@@ -111,6 +116,11 @@ $(BINARY11): mc10ascii.c
 $(BINARY12): zba2ascii.c
 	$(CC) $(CFLAGS) -o $(BINARY12) $<
 
+$(BINARY13): zbpc2ascii.c
+	$(CC) $(CFLAGS) -o $(BINARY13) $<
+
+$(BINARY14): ozbpc2ascii.c
+	$(CC) $(CFLAGS) -o $(BINARY14) $<
 clean:
 	rm -f *.o $(BINARY) *~
 
