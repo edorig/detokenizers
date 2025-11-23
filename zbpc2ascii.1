@@ -1,26 +1,27 @@
 ' t
-.TH ZBA2ASCII 1 "November 11, 2025" "" "User commands"
+.TH ZBPC2ASCII 1 "November 23, 2025" "" "User commands"
 .SH NAME \"{{{roff}}}\"{{{
-zba2ascii \- Zedcor  ZBasic for Apple II program files detokenizer 
+zbpc2ascii \- Zedcor  ZBasic for MS-DOS program files detokenizer 
 .\"}}}
 .SH SYNOPSIS \"{{{
 .ad l
-.B zba2ascii < tokenized.bas > listing.txt
+.B zbpc2ascii < tokenized.bas > listing.txt
 .ad b
 .\"}}}
 .SH DESCRIPTION \"{{{
 .SS "Introduction" \"{{{
-.B zba2ascii
-is a detokenizer for Zedcor ZBasic for Apple II program
+.B zbpc2ascii
+is a detokenizer for Zedcor ZBasic for MS-DOS program
 files.Zedcor initially offered ZBasic on the TRS-80 and later ported
 it to Apple II, CP/M, MSDOS and Macintosh. To save space in
 computer memory and on tapes or floppy disks, the ZBasic keywords were 
-replaced by single byte tokens. The line format was 2 bytes to encode
-the line number, 1 byte to encode the line length, followed by tokens
-and text of the line. A special token (0xff) was used to indicate that
+replaced by two byte tokens. The line format was 1 byte to encode the
+line length, 2 bytes to encode line number, a null byte, 2 extra
+bytes, followed by tokens and text of the line.
+A special token (0xff) was used to indicate that
 the following two bytes were a line number following a GOTO or GOSUB
 instruction. The last line of the program was numbered 65535 and
-contained only the instruction END. \fBzba2ascii\fP reads 
+contained only the instruction END. \fBzbpc2ascii\fP reads 
 on standard input a  ZBasic file saved in tokenized format and outputs  
 the program in ASCII format on standard output. After some adaptation,
 the program may 
@@ -29,7 +30,7 @@ be used with a Unix traditional Basic interpreter such as
 .\"}}}
 
 .SH SEE ALSO \"{{{
-to7ascii(1) gwascii(1) mc10ascii(1) bwbasic(1) bas(1) blassic(1) 
+to7ascii(1) gwascii(1) zba2ascii(1) bwbasic(1) bas(1) blassic(1) 
 \"}}} 
 .SH AUTHOR \"{{{
 This program is copyright 2025. 
@@ -50,10 +51,10 @@ Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
 .\"}}}
 .SH LIMITATIONS\"{{{
 The tokens recognized by the program correspond only to a subset of
-the keywords of ZBasic for Apple II. They were deduced from
-examination of a few sample tokenized program. Tokens for which a
-keyword has not been identified will appear as a $ sign followed by an
-hexadecimal number. Knowing the list of keywords of Zbasic and their
+the keywords of ZBasic for MS-DOS. They were deduced from
+examination of a few sample tokenized program. A token for which a
+keyword has not been identified will appear as a [0x8m-nn] with m=0,2,4,6,8,a.
+Knowing the list of keywords of Zbasic and their
 syntax may allow identification of the missing tokens. 
 .\"}}}
 .SH SEE ALSO \"{{{
