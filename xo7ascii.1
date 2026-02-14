@@ -1,23 +1,19 @@
 ' t
-.TH MC10ASCII 1 "November 11, 2025" "" "User commands"
+.TH XO7ASCII 1 "February 14, 2026" "" "User commands"
 .SH NAME \"{{{roff}}}\"{{{
-mc10ascii \- Microsoft Basic for 8-bit Tandy MC-10 and Matra Alice program files detokenizer 
+xo7ascii \- Microsoft Basic for 8-bit Canon X-07 program files detokenizer 
 .\"}}}
 .SH SYNOPSIS \"{{{
 .ad l
-.B mc10ascii < tokenized.bas > listing.txt
+.B to7ascii < tokenized.bas > listing.txt
 .ad b
 .\"}}}
 .SH DESCRIPTION \"{{{
 .SS "Introduction" \"{{{
-.B mc10ascii
-is a detokenizer for Microsoft Basic for Tandy MC10 and Matra Alice program
-files. Matra Alice and Tandy MC-10 8-bit
-microcomputers were built around Motorola 6803 microprocessors. The
-Matra Alice were used in French middle and high schools in the 1980s following
-the \fI Informatique pour Tous \fR plan of 1985. To save space in
-computer memory and on tapes or floppy disks, the Basic keywords were 
-replaced by single byte or two-byte tokens. \fBmc10ascii\fP reads 
+.B xo7ascii
+is a detokenizer for Microsoft Basic for Canon X-07 (an early portable
+computer) program
+files. \fBxo7ascii\fP reads 
 on standard input a  Basic file saved in tokenized format and outputs  
 the Basic program in ASCII format on standard output. The program may then
 be used with a Unix traditional Basic interpreter such as
@@ -28,7 +24,7 @@ be used with a Unix traditional Basic interpreter such as
 cpmascii(1) gwascii(1) trs80ascii(1) bwbasic(1) bas(1) blassic(1) 
 \"}}} 
 .SH AUTHOR \"{{{
-This program is copyright 2025. 
+This program is copyright 2026. 
 .PP
 This program is free software; you can redistribute it and/or modify it
 under the terms of the GNU Lesser General Public License as published
@@ -48,5 +44,6 @@ Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
 The program \fBgwbasic\fP written by Christian A. Ratliff
 was a detokenizer for GW-Basic, the IBM-PC Basic interpreter. The
 present program is inspired by it, but given the much simpler
-structure of tokenized Basic on the Tandy and Matra computers  it is written as a straightforward Unix filter. 
+structure of tokenized Basic on the X-07 it is written as a very
+simple Unix filter. 
 .\"}}}
